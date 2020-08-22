@@ -5,15 +5,14 @@ var dltitem = document.getElementById('dltitem');
 var text = document.getElementById('text');
 
 
-// Adding Items
-function additems(){
-if(inputbtn.value === '' || inputbtn.value === " "){
-    alert("you must write")
-}else{
-    var para = document.createElement('p');
-    text.append(para);
-    para.append(inputbtn.value)
-}
+// firebase 
+firebase.database().ref('to-do').on('child_added', function(data){
+
+    
+var para = document.createElement('p');
+text.append(para);
+para.append(data.val().value)
+
 
 // Add delet btn in each text node
 var btn = document.createElement("button");
@@ -41,8 +40,22 @@ btn.style.float = 'right';
 btn.style.marginRight = '10px';
 btn.setAttribute("onclick" , "edit(this)")
 
-// empty input after hit add
+//empty input after hit add
 inputbtn.value = "";
+})
+
+
+
+// Adding Items
+function additems(){
+    let databse = firebase.database().ref('to-do')
+    let key = databse.push().key;
+    var todo = {
+    value: inputbtn.value,
+    key: key
+    }
+    databse.child(key).set(todo) 
+
 }
 
 function edit(e){
